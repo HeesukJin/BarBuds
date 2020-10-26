@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "835997455224",
+    "firebase_url": "https://barbuds-7a3ee.firebaseio.com",
+    "project_id": "barbuds-7a3ee",
+    "storage_bucket": "barbuds-7a3ee.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:835997455224:android:37af26a634e2fe00a8ee8d",
+        "android_client_info": {
+          "package_name": "com.example.barbuds"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "835997455224-sqvq3669j8qbnsleji7sqsqu3jq41g7f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBBIwFOMFwyj40NNfgCZKjVEnp5ARPhWDY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "835997455224-sqvq3669j8qbnsleji7sqsqu3jq41g7f.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
