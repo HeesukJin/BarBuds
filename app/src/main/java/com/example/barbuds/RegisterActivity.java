@@ -18,29 +18,5 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-
-
-        findViewById(R.id.sign_up_button).setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-
-                // Access a Cloud Firestore instance from your Activity
-                FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-                db.collection("users").add(user).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-
-                    }
-                });
-            }
-        });
-
-
     }
 }
