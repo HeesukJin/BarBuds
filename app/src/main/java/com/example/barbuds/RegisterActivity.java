@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -28,12 +29,14 @@ public class RegisterActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 // Access a Cloud Firestore instance from your Activity
+                FirebaseApp.initializeApp(RegisterActivity.this);
                 mAuth = FirebaseAuth.getInstance();
 
-                String email = findViewById(R.id.email_register).toString();
-                String password = findViewById(R.id.password_register).toString();
+                EditText email = findViewById(R.id.email_register);
+                EditText password = findViewById(R.id.password_register);
 
-                mAuth.createUserWithEmailAndPassword(email, password)
+
+                mAuth.createUserWithEmailAndPassword(email.getText().toString().trim(), password.getText().toString().trim())
                         .addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
 
                             @Override

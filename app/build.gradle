@@ -45,9 +45,14 @@ dependencies {
     // When using the BoM, you don't specify versions in Firebase library dependencies
     implementation 'com.google.firebase:firebase-auth'
 
+    implementation 'com.google.firebase:firebase-core:9.6.1'
+
+
     //frame for account image
     implementation 'de.hdodenhof:circleimageview:3.0.1'
 
     implementation 'com.android.support:multidex:1.0.3'
 
 }
+
+apply plugin: 'com.google.gms.google-services'
