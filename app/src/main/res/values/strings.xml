@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">BarBuds</string>
+
+    //register page stuff
+    <string name="email">Email</string>
+    <string name="name">Name</string>
+    <string name="password">Password</string>
+    <string name="sign_up">Sign Up</string>
+
 </resources>
