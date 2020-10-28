@@ -5,6 +5,11 @@
     <string name="email">Email</string>
     <string name="name">Name</string>
     <string name="password">Password</string>
-    <string name="sign_up">Sign Up</string>
+    <string name="register">Register</string>
+    <string name="login">Login</string>
+    <string name="go_to_login">Go to Login</string>
+    <string name="go_to_registration">Go to Registration</string>
+
+
 
 </resources>
