@@ -15,6 +15,10 @@ android {
 
         multiDexEnabled true
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 
     buildTypes {
         release {
@@ -47,6 +51,8 @@ dependencies {
 
     implementation 'com.google.firebase:firebase-core:9.6.1'
 
+    implementation "sdk.chat:firestream:5.0.16"
+    implementation "sdk.chat:firestream-firestore:5.0.16"
 
     //frame for account image
     implementation 'de.hdodenhof:circleimageview:3.0.1'
