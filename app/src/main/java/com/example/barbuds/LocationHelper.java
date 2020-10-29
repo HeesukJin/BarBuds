@@ -11,12 +11,14 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.location.Location;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Looper;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -30,11 +32,27 @@ import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
+
+import org.imperiumlabs.geofirestore.GeoFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static java.security.AccessController.getContext;
 
 public class LocationHelper extends Service {
 
     FusedLocationProviderClient fusedLocationProviderClient;
     LocationRequest locationRequest;
+
+    private String uid;
+    private FirebaseFirestore db;
+    private GeoFirestore geoFirestore;
 
     private static final String TAG = "LocationHelper";
 
@@ -44,6 +62,16 @@ public class LocationHelper extends Service {
             String action = intent.getAction();
             if(action != null) {
                 if(action.equals(Constants.ACTION_START_LOCATION_SERVICE)){
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                    db = FirebaseFirestore.getInstance();
+
+                    if (user != null) {
+                        uid = user.getUid();
+                    }
+
+                    CollectionReference collectionRef = FirebaseFirestore.getInstance().collection("Users");
+                    geoFirestore = new GeoFirestore(collectionRef);
+
                     checkSettingsAndStartLocationUpdates();
                 }
                 else if(action.equals(Constants.ACTION_STOP_LOCATION_SERVICE)){
@@ -68,11 +96,20 @@ public class LocationHelper extends Service {
         @Override
         public void onLocationResult(LocationResult locationResult) {
             if(locationResult == null) {
-                return;
+                Log.d(TAG, "onLocationResult: " + "no location");
             }
             else {
                 for(Location location: locationResult.getLocations()) {
+                    geoFirestore.setLocation(uid, new GeoPoint(location.getLatitude(), location.getLongitude()));
                     Log.d(TAG, "onLocationResult: " + location.toString());
+
+                    Intent nearbyUsers = new Intent("nearbyUsers");
+
+                    Bundle b = new Bundle();
+                    b.putParcelable("location", location);
+
+                    nearbyUsers.putExtra("location", b);
+                    LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(nearbyUsers);
                 }
             }
         }

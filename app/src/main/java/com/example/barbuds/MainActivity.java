@@ -2,21 +2,39 @@ package com.example.barbuds;
 
 import android.Manifest;
 import android.app.ActivityManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
+
+import org.imperiumlabs.geofirestore.GeoFirestore;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
     int LOCATION_REQUEST_CODE = 13;
+
+    private GeoFirestore geoFirestore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,9 +55,20 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this,"Location service started",Toast.LENGTH_SHORT).show();
             }
 
+            LocalBroadcastManager.getInstance(MainActivity.this).registerReceiver(
+                    nearbyUsersReceiver, new IntentFilter("nearbyUsers"));
+
+            CollectionReference collectionRef = FirebaseFirestore.getInstance().collection("Users");
+            geoFirestore = new GeoFirestore(collectionRef);
         } else {
             ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST_CODE);
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(nearbyUsersReceiver);
     }
 
     @Override
@@ -76,4 +105,29 @@ public class MainActivity extends AppCompatActivity {
         }
         return false;
     }
+
+    private BroadcastReceiver nearbyUsersReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Bundle b = intent.getBundleExtra("location");
+            Location tempLocation = (Location) b.getParcelable("location");
+
+            if(tempLocation != null) {
+                geoFirestore.getAtLocation(new GeoPoint(tempLocation.getLatitude(), tempLocation.getLongitude()), 5, new GeoFirestore.SingleGeoQueryDataEventCallback() {
+                    @Override
+                    public void onComplete(List<? extends DocumentSnapshot> list, Exception e) {
+                        if(e != null) {
+                            Log.e(TAG, "onError: " + e);
+                        }
+                        else {
+                            Log.d(TAG, list.toString());
+
+                            //this is what where we will display nearby users
+                        }
+                    }
+                });
+
+            }
+        }
+    };
 }

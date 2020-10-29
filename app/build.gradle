@@ -22,6 +22,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
@@ -34,8 +38,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
     // Import the BoM for the Firebase platform
-    implementation platform('com.google.firebase:firebase-bom:25.12.0')
-    implementation 'com.firebaseui:firebase-ui-auth:6.2.0'
+    implementation platform('com.google.firebase:firebase-bom:26.0.0')
 
     // Declare the dependency for the Cloud Firestore library
     // When using the BoM, you don't specify versions in Firebase library dependencies
@@ -56,6 +59,8 @@ dependencies {
     //for location services
     implementation 'com.google.android.gms:play-services-location:17.0.0'
 
+    // used for geoFirestore
+    implementation 'com.github.imperiumlabs:GeoFirestore-Android:v1.5.0'
 }
 
 apply plugin: 'com.google.gms.google-services'
