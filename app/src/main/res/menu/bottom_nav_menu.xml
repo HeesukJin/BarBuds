@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--- This file is for the bottom navigation bar. This will be placed on the
+bottom of the menu page, the cart page, the QR page, and the favorites page.
+This will allow the user to easily transition from the current page they are on
+to either the cart, the favorites page, or the QR code scanner page.-->
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!---QR-code button that directs you to the QR code scanner page. -->
+    <item
+        android:id="@+id/action_scan"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_people_24"
+        android:title="People"
+        app:showAsAction="ifRoom" />
+
+    <!---Home button that directs you to the favorites page. -->
+    <item
+        android:id="@+id/action_home"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_account_circle_24"
+        android:title="Account"
+        app:showAsAction="ifRoom" />
+
+</menu>
