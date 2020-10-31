@@ -27,9 +27,8 @@
                 android:text="Name"
                 android:textColor="@android:color/background_dark"
                 android:textSize="18sp"
-                app:layout_constraintTop_toTopOf="parent" />
-
-
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>

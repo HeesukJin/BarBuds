@@ -67,6 +67,9 @@ dependencies {
 
     implementation 'com.google.firebase:firebase-core:9.6.1'
 
+    // Declare the dependency for the Cloud Storage library
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+    implementation 'com.google.firebase:firebase-storage'
 
     //frame for account image
     implementation 'de.hdodenhof:circleimageview:3.0.1'

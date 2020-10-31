@@ -8,7 +8,7 @@
 
     <!--This image view is the image selected as the profile picture of the user. It is placed in a circle container.-->
     <de.hdodenhof.circleimageview.CircleImageView
-    android:id="@+id/account_image_setup"
+    android:id="@+id/user_image_register"
     android:layout_width="160dp"
     android:layout_height="160dp"
     android:src="@drawable/icons8_customer_64"

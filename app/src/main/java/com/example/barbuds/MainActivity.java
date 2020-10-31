@@ -47,18 +47,10 @@ public class MainActivity extends AppCompatActivity {
 
         favoritesRecyclerView = findViewById(R.id.nearby_users_recycler_view);
 
+        // create bottom navigation bar and set up what it will do
         BottomNavigationView bottomNavigation = findViewById(R.id.navigation);
-
         BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener(){
 
-            /**
-             * Called when an item in the bottom navigation menu is selected.
-             *
-             * @param item The selected item
-             * @return true to display the item as the selected item and false if the item should not be
-             * selected. Consider setting non-selectable items as disabled preemptively to make them
-             * appear non-interactive.
-             */
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
@@ -82,8 +74,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
+        // if location services isn't allowed ask for permission otherwise get nearby users and send current location to database
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-
             if(!isLocationServiceRunning()){
                 Intent intent = new Intent(MainActivity.this, LocationHelper.class);
                 intent.setAction(Constants.ACTION_START_LOCATION_SERVICE);
@@ -93,24 +85,22 @@ public class MainActivity extends AppCompatActivity {
             LocalBroadcastManager.getInstance(MainActivity.this).registerReceiver(
                     nearbyUsersReceiver, new IntentFilter("nearbyUsers"));
 
-            CollectionReference collectionRef = FirebaseFirestore.getInstance().collection("Users");
-            geoFirestore = new GeoFirestore(collectionRef);
+            // sets up reference to the "Users" collection to use for geo-querying
+            geoFirestore = new GeoFirestore(FirebaseFirestore.getInstance().collection("Users"));
         } else {
             ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST_CODE);
         }
     }
 
+    // will stop the nearbyUsersReceiver when moving away from the activity
     @Override
     protected void onPause() {
         super.onPause();
         unregisterReceiver(nearbyUsersReceiver);
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
 
+    // asks for permission to use location services
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if(requestCode == LOCATION_REQUEST_CODE) {
@@ -124,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // checks to see if location services is already running
     private boolean isLocationServiceRunning() {
         ActivityManager activityManager =
                 (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
@@ -140,6 +131,7 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
+    // create BroadcastReceiver that will receive locations from LocationHelper.locationCallback method
     private BroadcastReceiver nearbyUsersReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
