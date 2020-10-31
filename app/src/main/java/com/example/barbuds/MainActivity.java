@@ -10,14 +10,21 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.Toast;
 
+import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.example.barbuds.fragment.MyAccountFragment;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -40,6 +47,35 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        BottomNavigationView bottomNavigation = findViewById(R.id.navigation);
+
+        BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =new BottomNavigationView.OnNavigationItemSelectedListener(){
+
+            /**
+             * Called when an item in the bottom navigation menu is selected.
+             *
+             * @param item The selected item
+             * @return true to display the item as the selected item and false if the item should not be
+             * selected. Consider setting non-selectable items as disabled preemptively to make them
+             * appear non-interactive.
+             */
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.action_account:
+                        final Fragment fragment1 = new MyAccountFragment();
+                        final FragmentManager fm = getSupportFragmentManager();
+                        fm.beginTransaction().add(R.id.fragment_layout,fragment1,"1").commit();
+                       // startActivity(new Intent(MainActivity.this, MainActivity.class));
+                        return true;
+                    case R.id.action_people:
+                        startActivity(new Intent(MainActivity.this, MainActivity.class));
+                        return true;
+                    }
+                    return false;
+            }
+        };
+        bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
     }
 
     @Override

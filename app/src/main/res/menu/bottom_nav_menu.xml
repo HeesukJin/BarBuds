@@ -8,7 +8,7 @@ to either the cart, the favorites page, or the QR code scanner page.-->
 
     <!---QR-code button that directs you to the QR code scanner page. -->
     <item
-        android:id="@+id/action_scan"
+        android:id="@+id/action_people"
         android:enabled="true"
         android:icon="@drawable/ic_baseline_people_24"
         android:title="People"
@@ -16,7 +16,7 @@ to either the cart, the favorites page, or the QR code scanner page.-->
 
     <!---Home button that directs you to the favorites page. -->
     <item
-        android:id="@+id/action_home"
+        android:id="@+id/action_account"
         android:enabled="true"
         android:icon="@drawable/ic_baseline_account_circle_24"
         android:title="Account"
