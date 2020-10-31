@@ -11,9 +11,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
-import android.widget.Toast;
 
-import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -21,12 +19,11 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.barbuds.fragment.MyAccountFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -37,19 +34,22 @@ import org.imperiumlabs.geofirestore.GeoFirestore;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-
     private static final String TAG = "MainActivity";
     int LOCATION_REQUEST_CODE = 13;
 
     private GeoFirestore geoFirestore;
+    private RecyclerView favoritesRecyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        favoritesRecyclerView = findViewById(R.id.nearby_users_recycler_view);
+
         BottomNavigationView bottomNavigation = findViewById(R.id.navigation);
 
-        BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =new BottomNavigationView.OnNavigationItemSelectedListener(){
+        BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener(){
 
             /**
              * Called when an item in the bottom navigation menu is selected.
@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.action_account:
                         final Fragment fragment1 = new MyAccountFragment();
                         final FragmentManager fm = getSupportFragmentManager();
-                        fm.beginTransaction().add(R.id.fragment_layout,fragment1,"1").commit();
+                        fm.beginTransaction().add(R.id.fragment_layout, fragment1,"1").commit();
                        // startActivity(new Intent(MainActivity.this, MainActivity.class));
                         return true;
                     case R.id.action_people:
@@ -88,7 +88,6 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, LocationHelper.class);
                 intent.setAction(Constants.ACTION_START_LOCATION_SERVICE);
                 startService(intent);
-                Toast.makeText(this,"Location service started",Toast.LENGTH_SHORT).show();
             }
 
             LocalBroadcastManager.getInstance(MainActivity.this).registerReceiver(
@@ -135,7 +134,6 @@ public class MainActivity extends AppCompatActivity {
                         return true;
                     }
                 }
-
             }
             return false;
         }
@@ -149,20 +147,18 @@ public class MainActivity extends AppCompatActivity {
             Location tempLocation = (Location) b.getParcelable("location");
 
             if(tempLocation != null) {
-                geoFirestore.getAtLocation(new GeoPoint(tempLocation.getLatitude(), tempLocation.getLongitude()), 5, new GeoFirestore.SingleGeoQueryDataEventCallback() {
+                geoFirestore.getAtLocation(new GeoPoint(tempLocation.getLatitude(), tempLocation.getLongitude()), 5000, new GeoFirestore.SingleGeoQueryDataEventCallback() {
                     @Override
                     public void onComplete(List<? extends DocumentSnapshot> list, Exception e) {
                         if(e != null) {
                             Log.e(TAG, "onError: " + e);
                         }
                         else {
-                            Log.d(TAG, list.toString());
-
-                            //this is what where we will display nearby users
+                            favoritesRecyclerView.setLayoutManager(new LinearLayoutManager((MainActivity.this)));
+                            favoritesRecyclerView.setAdapter(new MainActivityAdapter(MainActivity.this, list));
                         }
                     }
                 });
-
             }
         }
     };

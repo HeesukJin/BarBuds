@@ -18,9 +18,15 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -31,13 +37,13 @@ public class RegisterActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private CircleImageView accountImage;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
         mAuth = FirebaseAuth.getInstance();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
         accountImage = findViewById(R.id.account_image_setup);
 
 
@@ -59,8 +65,12 @@ public class RegisterActivity extends AppCompatActivity {
 
         findViewById(R.id.sign_up_button).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                EditText name = findViewById(R.id.name_register);
                 EditText email = findViewById(R.id.email_register);
                 EditText password = findViewById(R.id.password_register);
+
+                Map<String, Object> nameAddedToDatabase = new HashMap<>();
+                nameAddedToDatabase.put("name", name.getText().toString().trim());
 
                 // Attempt to create a new user and them in
                 mAuth.createUserWithEmailAndPassword(email.getText().toString().trim(), password.getText().toString().trim())
@@ -72,6 +82,21 @@ public class RegisterActivity extends AppCompatActivity {
                                     // Sign in success, update UI with the signed-in user's information
                                     Log.d(TAG, "createUserWithEmail:success");
 
+                                    db.collection("Users").document(mAuth.getUid())
+                                            .set(nameAddedToDatabase)
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Log.d(TAG, "DocumentSnapshot successfully written!");
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.w(TAG, "Error writing document", e);
+                                                }
+                                            });
+
                                     startActivity(new Intent(RegisterActivity.this, MainActivity.class));
                                 }
                                 else {
@@ -82,6 +107,8 @@ public class RegisterActivity extends AppCompatActivity {
                                 }
                             }
                         });
+
+
             }
         });
 
